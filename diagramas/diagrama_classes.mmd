@@ -1,0 +1,98 @@
+classDiagram
+    direction TB
+
+    class StatusLivro {
+        <<enumeration>>
+        DISPONIVEL
+        EMPRESTADO
+    }
+
+    class StatusEmprestimo {
+        <<enumeration>>
+        ATIVO
+        FINALIZADO
+    }
+
+    class Livro {
+        -Integer id
+        -String titulo
+        -String autor
+        -String isbn
+        -int anoPublicacao
+        -StatusLivro status
+        +Livro(Integer id, String titulo, String autor, String isbn, int anoPublicacao)
+        +getId() Integer
+        +getTitulo() String
+        +getAutor() String
+        +getIsbn() String
+        +getAnoPublicacao() int
+        +getStatus() StatusLivro
+        +isDisponivel() boolean
+        +emprestar() void
+        +devolver() void
+    }
+
+    class Emprestimo {
+        -Integer id
+        -Livro livro
+        -String nomeLocatario
+        -LocalDate dataEmprestimo
+        -LocalDate dataDevolucaoPrevista
+        -LocalDate dataDevolucaoEfetiva
+        -StatusEmprestimo status
+        +Emprestimo(Integer id, Livro livro, String nomeLocatario, LocalDate dataEmprestimo, int diasPrazo)
+        +getId() Integer
+        +getLivro() Livro
+        +getNomeLocatario() String
+        +getDataEmprestimo() LocalDate
+        +getDataDevolucaoPrevista() LocalDate
+        +getDataDevolucaoEfetiva() LocalDate
+        +getStatus() StatusEmprestimo
+        +isAtivo() boolean
+        +finalizar(LocalDate dataDevolucao) void
+    }
+
+    class BibliotecaRepository {
+        -List~Livro~ livros
+        -List~Emprestimo~ emprestimos
+        -int proximoIdLivro
+        -int proximoIdEmprestimo
+        +salvarLivro(Livro livro) Livro
+        +buscarLivroPorId(Integer id) Optional~Livro~
+        +buscarLivroPorIsbn(String isbn) Optional~Livro~
+        +listarLivros() List~Livro~
+        +salvarEmprestimo(Emprestimo emp) Emprestimo
+        +buscarEmprestimoPorId(Integer id) Optional~Emprestimo~
+        +listarEmprestimos() List~Emprestimo~
+        +carregarDadosIniciais() void
+    }
+
+    class BibliotecaController {
+        -BibliotecaRepository repository
+        +cadastrarLivro(String titulo, String autor, String isbn, int ano) ResultadoOperacao~Livro~
+        +listarLivros() List~Livro~
+        +buscarLivroPorId(Integer id) Optional~Livro~
+        +registrarEmprestimo(Integer livroId, String locatario) ResultadoOperacao~Emprestimo~
+        +registrarDevolucao(Integer emprestimoId) ResultadoOperacao~Emprestimo~
+        +listarEmprestimos() List~Emprestimo~
+    }
+
+    class BibliotecaConsoleView {
+        -BibliotecaController controller
+        -Scanner scanner
+        +iniciar() void
+        -exibirMenu() void
+        -cadastrarLivro() void
+        -listarLivros() void
+        -registrarEmprestimo() void
+        -registrarDevolucao() void
+        -listarEmprestimos() void
+    }
+
+    Livro --> StatusLivro : possui
+    Emprestimo --> StatusEmprestimo : possui
+    Emprestimo --> Livro : "1..1 referencia"
+    BibliotecaRepository o-- Livro : armazena
+    BibliotecaRepository o-- Emprestimo : armazena
+    BibliotecaController --> BibliotecaRepository : gerencia
+    BibliotecaConsoleView --> BibliotecaController : requisita operacoes

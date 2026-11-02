@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor B as Bibliotecário
+    participant V as BibliotecaConsoleView
+    participant C as BibliotecaController
+    participant R as BibliotecaRepository
+    participant L as Livro (Model)
+
+    B->>V: Seleciona "Cadastrar Livro"
+    V->>B: Solicita Título, Autor, ISBN e Ano
+    B->>V: Informa dados ("Clean Code", "Robert C. Martin", "978-0132350884", 2008)
+    V->>C: cadastrarLivro("Clean Code", "Robert C. Martin", "978-0132350884", 2008)
+
+    alt Validação de Campos Obrigatórios (Dados Vazios)
+        C-->>V: Retorna erro: "Título, Autor e ISBN são obrigatórios."
+        V-->>B: Exibe aviso de preenchimento obrigatório
+    else Campos Válidos
+        C->>R: buscarLivroPorIsbn("978-0132350884")
+        R-->>C: Optional<Livro>
+
+        alt ISBN Já Cadastrado
+            C-->>V: Retorna erro: "Já existe um livro cadastrado com este ISBN."
+            V-->>B: Exibe mensagem de duplicidade de ISBN
+        else ISBN Inédito
+            create participant L
+            C->>L: new Livro(null, "Clean Code", "Robert C. Martin", "978-0132350884", 2008)
+            Note over L: status inicial = DISPONIVEL
+            
+            C->>R: salvarLivro(novoLivro)
+            Note over R: atribui ID autoincrementado
+            R-->>C: livroSalvo
+            
+            C-->>V: Retorna sucesso (objeto Livro cadastrado)
+            V-->>B: Exibe confirmação com ID gerado
+        end
+    end

@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+    actor B as Bibliotecário
+    participant V as BibliotecaConsoleView
+    participant C as BibliotecaController
+    participant R as BibliotecaRepository
+    participant L as Livro (Model)
+    participant E as Emprestimo (Model)
+
+    B->>V: Seleciona "Registrar Empréstimo"
+    V->>B: Solicita ID do Livro e Nome do Locatário
+    B->>V: Informa (livroId, "Carlos Silva")
+    V->>C: registrarEmprestimo(livroId, "Carlos Silva")
+    
+    C->>R: buscarLivroPorId(livroId)
+    R-->>C: Optional<Livro>
+
+    alt Livro Não Encontrado
+        C-->>V: Retorna erro: "Livro não encontrado."
+        V-->>B: Exibe mensagem de erro
+    else Livro Encontrado
+        C->>L: isDisponivel()
+        L-->>C: boolean
+        
+        alt Livro Já Emprestado (!isDisponivel)
+            C-->>V: Retorna erro: "Livro indisponível para empréstimo."
+            V-->>B: Exibe aviso de livro já emprestado
+        else Livro Disponível (isDisponivel == true)
+            C->>L: emprestar()
+            Note over L: status alterado para EMPRESTADO
+            
+            create participant E
+            C->>E: new Emprestimo(livro, "Carlos Silva", hoje, 14 dias)
+            Note over E: status definido como ATIVO
+            
+            C->>R: salvarEmprestimo(novoEmprestimo)
+            R-->>C: emprestimoSalvo
+            
+            C-->>V: Retorna sucesso (objeto Emprestimo)
+            V-->>B: Exibe comprovante de empréstimo realizado
+        end
+    end
