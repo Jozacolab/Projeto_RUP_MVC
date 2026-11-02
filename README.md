@@ -25,6 +25,7 @@ Projeto_RUP_MVC/
 │
 ├── .gitignore                      # Configuração de arquivos ignorados no controle de versão
 ├── README.md                       # Documento principal de apresentação do projeto
+├── LICENSE
 │
 ├── planejamento/                   # Artefatos da Fase de Concepção e Elaboração
 │   ├── escopo.md                   # Documento de visão e delimitação de escopo
