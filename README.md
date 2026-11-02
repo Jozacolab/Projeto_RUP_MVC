@@ -25,12 +25,6 @@ Projeto_RUP_MVC/
 │
 ├── .gitignore                      # Configuração de arquivos ignorados no controle de versão
 ├── README.md                       # Documento principal de apresentação do projeto
-├── PROMPT_PROJETO_RUP_MVC.md       # Diretrizes e critérios de avaliação acadêmica
-│
-├── documentos/                     # Materiais de referência e modelos institucionais
-│   ├── Aplica IA - Dia 1.pptx      # Referência de Engenharia de Prompt e Metodologia CERTA
-│   ├── Enunciado_Projeto.docx      # Enunciado oficial da atividade acadêmica
-│   └── Modelo_Institucional.docx   # Modelo de capa e identificação da faculdade
 │
 ├── planejamento/                   # Artefatos da Fase de Concepção e Elaboração
 │   ├── escopo.md                   # Documento de visão e delimitação de escopo
